@@ -36,3 +36,18 @@ CREATE TABLE IF NOT EXISTS grocery_list_ingredients(
   FOREIGN KEY(grocery_list_id) REFERENCES grocery_lists(id),
   FOREIGN KEY(ingredient_id) REFERENCES ingredients(id)
 );
+
+CREATE TABLE IF NOT EXISTS food_diary(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_datetime TEXT,
+);
+
+CREATE TABLE IF NOT EXISTS food_diary_items(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  food_diary_id INTEGER,
+  ingredient_id INTEGER,
+  amount INTEGER,
+  unit TEXT,
+  FOREIGN KEY(food_diary_id) REFERENCES food_diary(id),
+  FOREIGN KEY(ingredient_id) REFERENCES ingredients(id)
+);
