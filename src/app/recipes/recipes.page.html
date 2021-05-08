@@ -1,18 +1,32 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Recipes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button [routerLink]="['/recipes/add-recipe']" routerDirection="forward">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list class="ion-padding">
+  <ion-spinner class="ion-align-self-center" *ngIf="loadingRecipes"></ion-spinner>
+  <ion-list class="ion-padding" *ngIf="!loadingRecipes">
     <ion-list-header>My recipes</ion-list-header>
-    <ion-item>
+    <ion-item *ngIf="recipes.length === 0">
       <ion-avatar slot="start">
         <img src="https://images-na.ssl-images-amazon.com/images/I/81-yKbVND-L.png" alt="doge"/>
       </ion-avatar>
       <ion-label>
         Wow such empty
+      </ion-label>
+    </ion-item>
+    <ion-item *ngFor="let recipe of recipes">
+      <ion-avatar slot="start">
+        <img [src]="recipe.imageUrl" alt="{{recipe.name}}"/>
+      </ion-avatar>
+      <ion-label>
+        {{recipe.name}}
       </ion-label>
     </ion-item>
   </ion-list>

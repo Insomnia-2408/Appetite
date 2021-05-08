@@ -9,6 +9,8 @@ import {AppRoutingModule} from './app-routing.module';
 import {TabsPageModule} from './tabs/tabs.module';
 import {SQLite} from '@ionic-native/sqlite/ngx';
 import {SQLitePorter} from '@ionic-native/sqlite-porter/ngx';
+import {HttpClientModule} from '@angular/common/http';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,7 +19,9 @@ import {SQLitePorter} from '@ionic-native/sqlite-porter/ngx';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    TabsPageModule
+    TabsPageModule,
+    HttpClientModule,
+    ReactiveFormsModule,
   ],
   providers: [
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},

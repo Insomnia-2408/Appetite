@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add recipe</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button (click)="navigateBack()"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-spinner *ngIf="loadingIngredients" class="ion-align-self-center"></ion-spinner>
+  <div fxLayout="column" fxLayoutAlign="space-between" *ngIf="!loadingIngredients">
+    <form [formGroup]="recipeForm">
+      <ion-list class="ion-padding">
+        <ion-list-header class="ion-no-padding">Add a new recipe</ion-list-header>
+        <ion-item class="ion-no-padding">
+          <ion-label position="floating">Name</ion-label>
+          <ion-input type="text" formControlName="name"></ion-input>
+        </ion-item>
+        <ion-item class="ion-no-padding">
+          <ion-label position="floating">Description</ion-label>
+          <ion-input type="text" formControlName="description"></ion-input>
+        </ion-item>
+        <ion-item class="ion-no-padding">
+          <ion-label position="floating">Instructions</ion-label>
+          <ion-input type="text" formControlName="instructions"></ion-input>
+        </ion-item>
+        <ion-item class="ion-no-padding">
+          <ion-label position="floating">Image</ion-label>
+          <ion-input type="text" formControlName="imageUrl"></ion-input>
+        </ion-item>
+        <ion-item class="ion-no-padding">
+          <ion-label position="floating">Servings</ion-label>
+          <ion-input type="number" formControlName="servings"></ion-input>
+        </ion-item>
+        <ion-item class="ion-no-padding" *ngIf="getRecipeIngredients().length > 0">
+          <div fxLayout="column" fxFlexFill>
+            <p>Ingredients</p>
+            <table>
+              <tr>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Unit</th>
+              </tr>
+              <tr *ngFor="let ingredient of getRecipeIngredients()">
+                <td>{{getIngredient(ingredient.id)}}</td>
+                <td>{{ingredient.amount}}</td>
+                <td>{{ingredient.unit}}</td>
+              </tr>
+            </table>
+          </div>
+        </ion-item>
+        <ion-button (click)="openAddIngredientToRecipe()">Add ingredient</ion-button>
+      </ion-list>
+    </form>
+    <ion-button (click)="saveRecipe()">Save recipe</ion-button>
+  </div>
+</ion-content>

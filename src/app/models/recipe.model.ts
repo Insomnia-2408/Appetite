@@ -6,5 +6,6 @@ export class RecipeModel {
   description: string;
   instructions: string;
   imageUrl: string;
+  servings: number;
   ingredients: Array<MeasuredIngredientModel>;
 }

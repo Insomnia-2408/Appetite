@@ -3,12 +3,13 @@ CREATE TABLE IF NOT EXISTS recipes(
   name TEXT,
   description TEXT,
   instructions TEXT,
-  image_url TEXT
+  image_url TEXT,
+  servings INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS ingredients(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  ingredient TEXT
+  name TEXT
 );
 
 CREATE TABLE IF NOT EXISTS recipe_ingredients(
@@ -24,7 +25,7 @@ CREATE TABLE IF NOT EXISTS recipe_ingredients(
 CREATE TABLE IF NOT EXISTS grocery_lists(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
-  created_datetime TEXT,
+  created_datetime TEXT
 );
 
 CREATE TABLE IF NOT EXISTS grocery_list_ingredients(
@@ -39,7 +40,7 @@ CREATE TABLE IF NOT EXISTS grocery_list_ingredients(
 
 CREATE TABLE IF NOT EXISTS food_diary(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  created_datetime TEXT,
+  created_datetime TEXT
 );
 
 CREATE TABLE IF NOT EXISTS food_diary_items(

@@ -1,20 +1,29 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
 import { RecipesPageRoutingModule } from './recipes-routing.module';
 
 import { RecipesPage } from './recipes.page';
+import {AddRecipeComponent} from './add-recipe/add-recipe.component';
+import {FlexModule} from '@angular/flex-layout';
+import {RecipeIngredientModalComponent} from './add-recipe/recipe-ingredient-modal/recipe-ingredient-modal.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    RecipesPageRoutingModule
+    RecipesPageRoutingModule,
+    ReactiveFormsModule,
+    FlexModule,
   ],
-  declarations: [RecipesPage]
+  declarations: [
+    RecipesPage,
+    AddRecipeComponent,
+    RecipeIngredientModalComponent,
+  ]
 })
 export class RecipesPageModule {}

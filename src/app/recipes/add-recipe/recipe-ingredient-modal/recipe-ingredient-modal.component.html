@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add recipe ingredient</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="modalController.dismiss(null)">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-spinner *ngIf="loadingIngredients"></ion-spinner>
+  <form [formGroup]="measuredIngredientForm" *ngIf="!loadingIngredients">
+    <ion-list class="ion-padding">
+      <ion-list-header class="ion-no-padding">Add a ingredient to the recipe</ion-list-header>
+      <div fxLayout="row" fxLayoutAlign=" center">
+        <ion-item fxFlex="95" class="ion-no-padding">
+          <ion-label>Ingredient</ion-label>
+          <ion-select formControlName="ingredient">
+            <ion-select-option *ngFor="let ingredient of ingredients"
+                               [value]="ingredient.id">{{ingredient.name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-button fill="clear" (click)="openAddIngredient()">
+          <ion-icon name="add-circle-outline" color="primary"></ion-icon>
+        </ion-button>
+      </div>
+      <ion-item class="ion-no-padding">
+        <ion-label position="floating">Amount</ion-label>
+        <ion-input formControlName="amount" type="number"></ion-input>
+      </ion-item>
+      <ion-item class="ion-no-padding">
+        <ion-label position="floating">Unit</ion-label>
+        <ion-input formControlName="unit" type="text"></ion-input>
+      </ion-item>
+      <ion-button (click)="addIngredientToRecipe()">Add ingredient to recipe</ion-button>
+    </ion-list>
+  </form>
+
+</ion-content>
