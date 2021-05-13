@@ -76,6 +76,32 @@ export class DatabaseService {
     }));
   }
 
+  public getRecipe(recipeId: number): Promise<RecipeModel> {
+    return new Promise<RecipeModel>(((resolve, reject) => {
+      this.database.executeSql(
+        'SELECT * FROM recipes WHERE id=?',
+        [recipeId]
+      ).then(data => {
+        if (data.rows.length > 0) {
+          this.getRecipeIngredients(recipeId).then(ingredients => {
+            const recipe = {
+              id: data.rows.item(0).id,
+              name: data.rows.item(0).name,
+              description: data.rows.item(0).description,
+              instructions: data.rows.item(0).instructions,
+              imageUrl: data.rows.item(0).image_url,
+              servings: data.rows.item(0).servings,
+              ingredients,
+            };
+            resolve(recipe);
+          });
+        } else {
+          reject();
+        }
+      });
+    }));
+  }
+
   private getRecipeIngredients(recipeId): Promise<MeasuredIngredientModel[]> {
     return new Promise<MeasuredIngredientModel[]>((resolve => {
       this.database.executeSql(
@@ -157,7 +183,7 @@ export class DatabaseService {
   public addIngredient(ingredient): Promise<boolean> {
     return new Promise<boolean>(((resolve, reject) => {
       this.database.executeSql(
-          'INSERT INTO ingredients (name) VALUES (?)',
+        'INSERT INTO ingredients (name) VALUES (?)',
         [ingredient]
       ).catch(() => {
         reject();

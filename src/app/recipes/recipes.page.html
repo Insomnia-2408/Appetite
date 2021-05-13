@@ -21,13 +21,14 @@
         Wow such empty
       </ion-label>
     </ion-item>
-    <ion-item *ngFor="let recipe of recipes">
+    <ion-item *ngFor="let recipe of recipes" (click)="navigateToDetail(recipe.id)">
       <ion-avatar slot="start">
         <img [src]="recipe.imageUrl" alt="{{recipe.name}}"/>
       </ion-avatar>
       <ion-label>
         {{recipe.name}}
       </ion-label>
+      <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
     </ion-item>
   </ion-list>
 </ion-content>

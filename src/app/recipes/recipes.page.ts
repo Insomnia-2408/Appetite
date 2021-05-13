@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DatabaseService} from '../services/database.service';
 import {RecipeModel} from '../models/recipe.model';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-recipes',
@@ -12,7 +13,7 @@ export class RecipesPage implements OnInit {
   public recipes: Array<RecipeModel>;
   public loadingRecipes = true;
 
-  constructor(private databaseService: DatabaseService) {
+  constructor(private databaseService: DatabaseService, private router: Router) {
   }
 
   ngOnInit() {
@@ -34,4 +35,7 @@ export class RecipesPage implements OnInit {
     this.loadRecipes();
   }
 
+  public navigateToDetail(id: number) {
+    this.router.navigate([`/recipes/${id}`]);
+  }
 }

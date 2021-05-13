@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {AlertController, ModalController, ToastController} from '@ionic/angular';
+import {AlertController, ModalController} from '@ionic/angular';
 import {DatabaseService} from '../../../services/database.service';
 import {IngredientModel} from '../../../models/ingredient.model';
+import {ToastService} from '../../../services/toast.service';
 
 @Component({
   selector: 'app-recipe-ingredient-modal',
@@ -23,7 +24,7 @@ export class RecipeIngredientModalComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private alertController: AlertController,
-    private toastController: ToastController,
+    private toastService: ToastService,
     private databaseService: DatabaseService
   ) {
   }
@@ -80,19 +81,11 @@ export class RecipeIngredientModalComponent implements OnInit {
     this.loadingIngredients = true;
     this.databaseService.addIngredient(ingredient)
       .catch(() => {
-        this.presentToast('Something went wrong when adding the ingredient, try again later');
+        this.toastService.presentToast('Something went wrong when adding the ingredient, try again later');
       })
       .then(() => {
-        this.presentToast('Ingredient added');
+        this.toastService.presentToast('Ingredient added');
         this.loadIngredients();
       });
-  }
-
-  public async presentToast(message) {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2000
-    });
-    await toast.present();
   }
 }

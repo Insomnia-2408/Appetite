@@ -3,9 +3,10 @@ import {Router} from '@angular/router';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {DatabaseService} from '../../services/database.service';
 import {IngredientModel} from '../../models/ingredient.model';
-import {ModalController, ToastController} from '@ionic/angular';
+import {ModalController} from '@ionic/angular';
 import {RecipeIngredientModalComponent} from './recipe-ingredient-modal/recipe-ingredient-modal.component';
 import {MeasuredIngredientModel} from '../../models/measured-ingredient.model';
+import {ToastService} from '../../services/toast.service';
 
 @Component({
   selector: 'app-add-recipe',
@@ -29,7 +30,7 @@ export class AddRecipeComponent implements OnInit {
   constructor(
     private databaseService: DatabaseService,
     private router: Router,
-    private toastController: ToastController,
+    private toastService: ToastService,
     private modalController: ModalController
   ) {
   }
@@ -89,19 +90,12 @@ export class AddRecipeComponent implements OnInit {
     const recipe = this.recipeForm.getRawValue();
     this.databaseService.addRecipe(recipe)
       .catch(() => {
-        this.presentToast('Something went wrong while adding the recipe, try again later');
+        this.toastService.presentToast('Something went wrong while adding the recipe, try again later');
       })
       .then(() => {
-        this.presentToast('Recipe added');
+        this.toastService.presentToast('Recipe added');
         this.navigateBack();
       });
   }
 
-  public async presentToast(message) {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2000
-    });
-    await toast.present();
-  }
 }
