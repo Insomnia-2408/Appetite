@@ -16,7 +16,7 @@
       <div fxLayout="row" fxLayoutAlign=" center">
         <ion-item fxFlex="95" class="ion-no-padding">
           <ion-label>Ingredient</ion-label>
-          <ion-select formControlName="ingredient">
+          <ion-select formControlName="id">
             <ion-select-option *ngFor="let ingredient of ingredients"
                                [value]="ingredient.id">{{ingredient.name}}</ion-select-option>
           </ion-select>

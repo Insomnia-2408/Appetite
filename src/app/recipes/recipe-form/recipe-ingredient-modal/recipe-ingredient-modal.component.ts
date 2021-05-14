@@ -13,7 +13,7 @@ import {ToastService} from '../../../services/toast.service';
 export class RecipeIngredientModalComponent implements OnInit {
 
   public measuredIngredientForm = new FormGroup({
-    ingredient: new FormControl('', [Validators.required]),
+    id: new FormControl('', [Validators.required]),
     amount: new FormControl('', [Validators.required]),
     unit: new FormControl(''),
   });
@@ -45,11 +45,7 @@ export class RecipeIngredientModalComponent implements OnInit {
   }
 
   public async addIngredientToRecipe() {
-   await this.modalController.dismiss({
-      ingredient: this.measuredIngredientForm.controls.ingredient.value,
-      amount: this.measuredIngredientForm.controls.amount.value,
-      unit: this.measuredIngredientForm.controls.unit.value,
-    });
+    await this.modalController.dismiss(this.measuredIngredientForm.getRawValue());
   }
 
   public async openAddIngredient() {

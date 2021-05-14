@@ -13,7 +13,8 @@ export class RecipeDetailComponent implements OnInit {
   public recipe: RecipeModel;
   public recipeId: number;
   public loadingRecipe = true;
-  private defaultImage = 'http://beepeers.com/assets/images/commerces/default-image.jpg';
+  public editing = false;
+  private defaultImage = 'https://i.stack.imgur.com/y9DpT.jpg';
 
   constructor(
     private router: Router,
@@ -32,9 +33,9 @@ export class RecipeDetailComponent implements OnInit {
   public loadRecipe() {
     this.databaseService.getRecipe(this.recipeId).then(recipe => {
       this.recipe = recipe;
-      if (recipe.imageUrl === undefined) {
-        this.recipe.imageUrl = this.defaultImage;
-      }
+      // if (recipe.imageUrl.trim() === '') {
+      //   this.recipe.imageUrl = this.defaultImage;
+      // }
       this.loadingRecipe = false;
     }).catch(() => {
       this.toastService.presentToast('Something went wrong when loading the recipe, try again later');
@@ -45,7 +46,20 @@ export class RecipeDetailComponent implements OnInit {
     this.router.navigate(['/recipes']);
   }
 
-  public editRecipe() {
-    console.log('Edit recipe');
+  public editRecipe(recipe) {
+    this.databaseService.editRecipe(recipe)
+      .catch(() => {
+        this.toastService.presentToast(`Something went wrong when editing ${recipe.name}, try again later`);
+      })
+      .then(() => {
+        this.toastService.presentToast(`Edited ${recipe.name}`);
+        this.editing = false;
+        this.loadingRecipe = true;
+        this.loadRecipe();
+    });
+  }
+
+  public getImage() {
+    return this.recipe.imageUrl ? this.recipe.imageUrl : this.defaultImage;
   }
 }

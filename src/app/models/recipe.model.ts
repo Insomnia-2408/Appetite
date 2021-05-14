@@ -7,5 +7,5 @@ export class RecipeModel {
   instructions: string;
   imageUrl: string;
   servings: number;
-  ingredients: Array<MeasuredIngredientModel>;
+  ingredients: MeasuredIngredientModel[];
 }

@@ -3,9 +3,6 @@ import {Router} from '@angular/router';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {DatabaseService} from '../../services/database.service';
 import {IngredientModel} from '../../models/ingredient.model';
-import {ModalController} from '@ionic/angular';
-import {RecipeIngredientModalComponent} from './recipe-ingredient-modal/recipe-ingredient-modal.component';
-import {MeasuredIngredientModel} from '../../models/measured-ingredient.model';
 import {ToastService} from '../../services/toast.service';
 
 @Component({
@@ -31,7 +28,6 @@ export class AddRecipeComponent implements OnInit {
     private databaseService: DatabaseService,
     private router: Router,
     private toastService: ToastService,
-    private modalController: ModalController
   ) {
   }
 
@@ -54,40 +50,7 @@ export class AddRecipeComponent implements OnInit {
     this.router.navigate(['/recipes']);
   }
 
-  public addIngredientToRecipe(data) {
-    const ingredients = this.recipeForm.controls.ingredients as FormArray;
-    ingredients.push(new FormGroup({
-      id: new FormControl(data.ingredient, Validators.required),
-      amount: new FormControl(data.amount, Validators.required),
-      unit: new FormControl(data.unit),
-    }));
-    this.recipeForm.controls.ingredients.setValue(ingredients);
-  }
-
-  public async openAddIngredientToRecipe() {
-    const modal = await this.modalController.create({
-      component: RecipeIngredientModalComponent,
-    });
-    modal.onDidDismiss().then((result) => {
-      if (result.data !== null) {
-        this.loadingIngredients = true;
-        this.loadIngredients();
-        this.addIngredientToRecipe(result.data);
-      }
-    });
-    return await modal.present();
-  }
-
-  public getRecipeIngredients(): MeasuredIngredientModel[] {
-    return this.recipeForm.controls.ingredients.value;
-  }
-
-  public getIngredient(ingredientId: any) {
-    return this.ingredients.find(ingredient => ingredient.id === ingredientId).name;
-  }
-
-  public saveRecipe() {
-    const recipe = this.recipeForm.getRawValue();
+  public saveRecipe(recipe) {
     this.databaseService.addRecipe(recipe)
       .catch(() => {
         this.toastService.presentToast('Something went wrong while adding the recipe, try again later');

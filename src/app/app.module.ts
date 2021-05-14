@@ -11,6 +11,7 @@ import {SQLite} from '@ionic-native/sqlite/ngx';
 import {SQLitePorter} from '@ionic-native/sqlite-porter/ngx';
 import {HttpClientModule} from '@angular/common/http';
 import {ReactiveFormsModule} from '@angular/forms';
+import {FlexModule} from '@angular/flex-layout';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +23,7 @@ import {ReactiveFormsModule} from '@angular/forms';
     TabsPageModule,
     HttpClientModule,
     ReactiveFormsModule,
+    FlexModule,
   ],
   providers: [
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},

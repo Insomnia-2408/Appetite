@@ -9,8 +9,9 @@ import { RecipesPageRoutingModule } from './recipes-routing.module';
 import { RecipesPage } from './recipes.page';
 import {AddRecipeComponent} from './add-recipe/add-recipe.component';
 import {FlexModule} from '@angular/flex-layout';
-import {RecipeIngredientModalComponent} from './add-recipe/recipe-ingredient-modal/recipe-ingredient-modal.component';
+import {RecipeIngredientModalComponent} from './recipe-form/recipe-ingredient-modal/recipe-ingredient-modal.component';
 import {RecipeDetailComponent} from './recipe-detail/recipe-detail.component';
+import {RecipeFormComponent} from './recipe-form/recipe-form.component';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import {RecipeDetailComponent} from './recipe-detail/recipe-detail.component';
     AddRecipeComponent,
     RecipeDetailComponent,
     RecipeIngredientModalComponent,
+    RecipeFormComponent,
   ]
 })
 export class RecipesPageModule {}

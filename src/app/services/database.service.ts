@@ -71,7 +71,7 @@ export class DatabaseService {
             });
           }
         }
-        resolve(recipes);
+        return resolve(recipes);
       });
     }));
   }
@@ -93,10 +93,10 @@ export class DatabaseService {
               servings: data.rows.item(0).servings,
               ingredients,
             };
-            resolve(recipe);
+            return resolve(recipe);
           });
         } else {
-          reject();
+          return reject();
         }
       });
     }));
@@ -119,7 +119,7 @@ export class DatabaseService {
             });
           }
         }
-        resolve(recipeIngredients);
+        return resolve(recipeIngredients);
       });
     }));
   }
@@ -130,14 +130,14 @@ export class DatabaseService {
         'INSERT INTO recipes (name, description, instructions, image_url, servings) VALUES(?, ?, ?, ?, ?)',
         [recipe.name, recipe.description, recipe.instructions, recipe.imageUrl, recipe.servings]
       ).catch(() => {
-        reject();
+        return reject();
       }).then(data => {
         this.addRecipeIngredients(data.insertId, recipe.ingredients)
           .catch(() => {
-            reject();
+            return reject();
           })
           .then(() => {
-            resolve();
+            return resolve();
           });
       });
     }));
@@ -152,9 +152,9 @@ export class DatabaseService {
             [recipeId, ingredient.id, ingredient.amount, ingredient.unit]);
         });
       }).catch(() => {
-        reject();
+        return reject();
       }).then(() => {
-        resolve();
+        return resolve();
       });
     }));
   }
@@ -174,7 +174,7 @@ export class DatabaseService {
               });
             }
           }
-          resolve(ingredients);
+          return resolve(ingredients);
         }
       );
     }));
@@ -186,11 +186,119 @@ export class DatabaseService {
         'INSERT INTO ingredients (name) VALUES (?)',
         [ingredient]
       ).catch(() => {
-        reject();
+        return reject();
       }).then(() => {
-        resolve();
+        return resolve();
       });
     }));
   }
 
+  public editRecipe(recipe: RecipeModel): Promise<boolean> {
+    return new Promise<boolean>(((resolve, reject) => {
+      this.database.executeSql(
+        'UPDATE recipes SET name=?, description=?, instructions=?, image_url=?, servings=? WHERE id=?',
+        [recipe.name, recipe.description, recipe.instructions, recipe.imageUrl, recipe.servings, recipe.id]
+      ).catch(() => {
+        return reject();
+      }).then(() => {
+        this.updateRecipeIngredients(recipe.id, recipe.ingredients)
+          .catch(() => {
+            return reject();
+          })
+          .then(() => {
+            return resolve();
+          });
+      });
+    }));
+  }
+
+  private updateRecipeIngredients(recipeId, ingredients: MeasuredIngredientModel[]): Promise<boolean> {
+    return new Promise<boolean>(((resolve, reject) => {
+      this.getRecipeIngredients(recipeId)
+        .catch(() => {
+          return reject();
+        })
+        .then(recipeIngredients => {
+          const changes = this.compareIngredients(recipeIngredients, ingredients);
+          Promise.all([
+            this.removeRecipeIngredients(recipeId, changes.removedIngredients),
+            this.editRecipeIngredients(recipeId, changes.updatedIngredients),
+            this.addRecipeIngredients(recipeId, changes.addedIngredients)
+          ])
+            .catch(() => {
+              return reject();
+            })
+            .then(() => {
+              return resolve();
+            });
+        });
+    }));
+  }
+
+  private compareIngredients(existingIngredients, newIngredients) {
+    const removedIngredients: number[] = [];
+    const updatedIngredients: MeasuredIngredientModel[] = [];
+    const addedIngredients: MeasuredIngredientModel[] = [];
+    existingIngredients.forEach(existingIngredient => {
+      if (!newIngredients.map(newIngredient => newIngredient.id).includes(existingIngredient.id)) {
+        removedIngredients.push(existingIngredient.id);
+      }
+      if (newIngredients.map(newIngredient => newIngredient.id).includes(existingIngredient.id)) {
+        const newIngredient = newIngredients.find(ingredient => ingredient.id === existingIngredient.id);
+        if (newIngredient.amount !== existingIngredient.amount || newIngredient.unit !== existingIngredient.unit) {
+          updatedIngredients.push(newIngredient);
+        }
+      }
+    });
+    newIngredients.forEach(newIngredient => {
+      if (!existingIngredients.map(existingIngredient => existingIngredient.id).includes(newIngredient.id)) {
+        addedIngredients.push(newIngredient);
+      }
+    });
+    return {removedIngredients, updatedIngredients, addedIngredients};
+  }
+
+  private removeRecipeIngredients(recipeId, ingredients): Promise<boolean> {
+    return new Promise<boolean>(((resolve, reject) => {
+      if (ingredients.length === 0) {
+        return resolve();
+      }
+      this.database.transaction(tx => {
+        ingredients.forEach(ingredientId => {
+          tx.executeSql(
+            'DELETE FROM recipe_ingredients WHERE recipe_id=? AND ingredient_id=?',
+            [recipeId, ingredientId]
+          );
+        });
+      })
+        .catch(() => {
+          return reject();
+        })
+        .then(() => {
+          return resolve();
+        });
+    }));
+  }
+
+  private editRecipeIngredients(recipeId, ingredients): Promise<boolean> {
+    return new Promise<boolean>(((resolve, reject) => {
+      if (ingredients.length === 0) {
+        return resolve();
+      }
+      this.database.transaction(tx => {
+        ingredients.forEach(ingredient => {
+          tx.executeSql(
+            'UPDATE recipe_ingredients SET amount=?, unit=? WHERE recipe_id=?, ingredient_id=?',
+            [ingredient.amount, ingredient.unit, recipeId, ingredient.id]
+          );
+        });
+      })
+        .catch(() => {
+          return reject();
+        })
+        .then(() => {
+          return resolve();
+        });
+    }));
+  }
 }
