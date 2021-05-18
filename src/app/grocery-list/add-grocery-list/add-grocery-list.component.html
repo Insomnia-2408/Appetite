@@ -1,0 +1,13 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add grocery list</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button (click)="navigateBack()"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-spinner *ngIf="loadingIngredients" class="ion-align-self-center"></ion-spinner>
+  <app-grocery-list-form *ngIf="!loadingIngredients" (groceryListOut)="saveGroceryList($event)"></app-grocery-list-form>
+</ion-content>

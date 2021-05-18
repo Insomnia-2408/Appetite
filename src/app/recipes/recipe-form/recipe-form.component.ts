@@ -1,11 +1,12 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {RecipeIngredientModalComponent} from './recipe-ingredient-modal/recipe-ingredient-modal.component';
 import {ModalController} from '@ionic/angular';
-import {DatabaseService} from '../../services/database.service';
 import {IngredientModel} from '../../models/ingredient.model';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MeasuredIngredientModel} from '../../models/measured-ingredient.model';
 import {RecipeModel} from '../../models/recipe.model';
+import {ImageService} from "../../services/image.service";
+import {RecipeService} from "../../services/recipe.service";
 
 @Component({
   selector: 'app-recipe-form',
@@ -29,11 +30,11 @@ export class RecipeFormComponent implements OnInit {
 
   public ingredients: IngredientModel[];
   public loadingIngredients = true;
-  private defaultImage = 'https://i.stack.imgur.com/y9DpT.jpg';
 
   constructor(
     private modalController: ModalController,
-    private databaseService: DatabaseService
+    private recipeService: RecipeService,
+    private imageService: ImageService
   ) {
   }
 
@@ -48,9 +49,9 @@ export class RecipeFormComponent implements OnInit {
   }
 
   private loadIngredients() {
-    this.databaseService.getDatabaseState().subscribe(result => {
+    this.recipeService.getDatabaseState().subscribe(result => {
       if (result) {
-        this.databaseService.getIngredients().then(ingredients => {
+        this.recipeService.getIngredients().then(ingredients => {
           this.ingredients = ingredients;
           this.loadingIngredients = false;
         });
@@ -93,11 +94,15 @@ export class RecipeFormComponent implements OnInit {
   }
 
   public getImage() {
-    return this.recipeForm.controls.imageUrl.value ? this.recipeForm.controls.imageUrl.value : this.defaultImage;
+    return this.recipeForm.controls.imageUrl.value ? this.recipeForm.controls.imageUrl.value : this.imageService.getDefaultImage();
   }
 
   public removeIngredient(ingredient: MeasuredIngredientModel) {
     const index = this.recipeForm.controls.ingredients.value.findIndex(existingIngredient => existingIngredient.id === ingredient.id);
     (this.recipeForm.controls.ingredients as FormArray).removeAt(index);
+  }
+
+  public cancel() {
+    this.recipeOut.emit(null);
   }
 }

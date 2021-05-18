@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
-import {DatabaseService} from '../../services/database.service';
 import {IngredientModel} from '../../models/ingredient.model';
-import {ToastService} from '../../services/toast.service';
+import {PopupService} from '../../services/popup.service';
+import {RecipeService} from "../../services/recipe.service";
 
 @Component({
   selector: 'app-add-recipe',
@@ -12,22 +11,13 @@ import {ToastService} from '../../services/toast.service';
 })
 export class AddRecipeComponent implements OnInit {
 
-  public recipeForm = new FormGroup({
-    name: new FormControl('', [Validators.required]),
-    description: new FormControl('', [Validators.required]),
-    instructions: new FormControl('', [Validators.required]),
-    imageUrl: new FormControl(''),
-    servings: new FormControl(''),
-    ingredients: new FormArray([])
-  });
-
   public ingredients: IngredientModel[];
   public loadingIngredients = true;
 
   constructor(
-    private databaseService: DatabaseService,
+    private recipeService: RecipeService,
     private router: Router,
-    private toastService: ToastService,
+    private toastService: PopupService,
   ) {
   }
 
@@ -36,9 +26,9 @@ export class AddRecipeComponent implements OnInit {
   }
 
   private loadIngredients() {
-    this.databaseService.getDatabaseState().subscribe(result => {
+    this.recipeService.getDatabaseState().subscribe(result => {
       if (result) {
-        this.databaseService.getIngredients().then(ingredients => {
+        this.recipeService.getIngredients().then(ingredients => {
           this.ingredients = ingredients;
           this.loadingIngredients = false;
         });
@@ -51,7 +41,7 @@ export class AddRecipeComponent implements OnInit {
   }
 
   public saveRecipe(recipe) {
-    this.databaseService.addRecipe(recipe)
+    this.recipeService.addRecipe(recipe)
       .catch(() => {
         this.toastService.presentToast('Something went wrong while adding the recipe, try again later');
       })

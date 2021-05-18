@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{loadingGroceryList ? 'Loading...' : groceryList.name}}</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button (click)="navigateBack()"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="share()">
+        <ion-icon slot="icon-only" name="share"></ion-icon>
+      </ion-button>
+      <ion-button (click)="openRemoveGroceryList()">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-spinner *ngIf="loadingGroceryList" class="ion-align-self-center"></ion-spinner>
+  <app-grocery-list-form *ngIf="!loadingGroceryList" [groceryListIn]="groceryList" #groceryListFormComponent></app-grocery-list-form>
+</ion-content>

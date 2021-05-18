@@ -9,11 +9,11 @@
       </ion-item>
       <ion-item class="ion-no-padding">
         <ion-label position="floating">Description</ion-label>
-        <ion-input type="text" formControlName="description"></ion-input>
+        <ion-textarea formControlName="description"></ion-textarea>
       </ion-item>
       <ion-item class="ion-no-padding">
         <ion-label position="floating">Instructions</ion-label>
-        <ion-input type="text" formControlName="instructions"></ion-input>
+        <ion-textarea formControlName="instructions"></ion-textarea>
       </ion-item>
       <ion-item class="ion-no-padding">
         <ion-label position="floating">Image</ion-label>
@@ -48,5 +48,8 @@
       <ion-button (click)="openAddIngredientToRecipe()">Add ingredient</ion-button>
     </ion-list>
   </form>
-  <ion-button (click)="emitRecipe()">{{recipeIn ? 'Edit recipe' : 'Save recipe'}}</ion-button>
+  <div fxLayout="row" fxLayoutGap="10px" fxFlexFill>
+    <ion-button [fxFlex]="recipeIn ? 50 : 100" (click)="emitRecipe()">Save</ion-button>
+    <ion-button [fxFlex]="recipeIn ? 50 : 0" *ngIf="recipeIn" (click)="cancel()">Cancel</ion-button>
+  </div>
 </div>

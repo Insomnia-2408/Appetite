@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {DatabaseService} from '../services/database.service';
 import {RecipeModel} from '../models/recipe.model';
 import {Router} from '@angular/router';
+import {ImageService} from "../services/image.service";
+import {RecipeService} from "../services/recipe.service";
 
 @Component({
   selector: 'app-recipes',
@@ -13,7 +14,11 @@ export class RecipesPage implements OnInit {
   public recipes: Array<RecipeModel>;
   public loadingRecipes = true;
 
-  constructor(private databaseService: DatabaseService, private router: Router) {
+  constructor(
+    private recipeService: RecipeService,
+    private router: Router,
+    private imageService: ImageService
+  ) {
   }
 
   ngOnInit() {
@@ -21,9 +26,9 @@ export class RecipesPage implements OnInit {
   }
 
   public loadRecipes() {
-    this.databaseService.getDatabaseState().subscribe(result => {
+    this.recipeService.getDatabaseState().subscribe(result => {
       if (result) {
-        this.databaseService.getRecipes().then(recipes => {
+        this.recipeService.getRecipes().then(recipes => {
           this.recipes = recipes;
           this.loadingRecipes = false;
         });
@@ -37,5 +42,9 @@ export class RecipesPage implements OnInit {
 
   public navigateToDetail(id: number) {
     this.router.navigate([`/recipes/${id}`]);
+  }
+
+  public getImage(recipe: RecipeModel) {
+    return recipe.imageUrl ? recipe.imageUrl : this.imageService.getDefaultImage();
   }
 }

@@ -9,10 +9,6 @@
       "launchShowDuration": 0
     }
   },
-  "server": {
-    "cleartext": true,
-    "url": "http://192.168.50.207:8100"
-  },
   "cordova": {
     "preferences": {
       "ScrollEnabled": "false",

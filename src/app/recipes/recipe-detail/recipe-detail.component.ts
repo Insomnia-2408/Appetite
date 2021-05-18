@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {RecipeModel} from '../../models/recipe.model';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DatabaseService} from '../../services/database.service';
-import {ToastService} from '../../services/toast.service';
+import {PopupService} from '../../services/popup.service';
+import {RecipeService} from "../../services/recipe.service";
+import {ImageService} from "../../services/image.service";
 
 @Component({
   selector: 'app-recipe-detail',
@@ -14,13 +15,14 @@ export class RecipeDetailComponent implements OnInit {
   public recipeId: number;
   public loadingRecipe = true;
   public editing = false;
-  private defaultImage = 'https://i.stack.imgur.com/y9DpT.jpg';
+  public servingsModifier;
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private databaseService: DatabaseService,
-    private toastService: ToastService,
+    private recipeService: RecipeService,
+    private popupService: PopupService,
+    private imageService: ImageService
   ) { }
 
   ngOnInit() {
@@ -31,14 +33,12 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   public loadRecipe() {
-    this.databaseService.getRecipe(this.recipeId).then(recipe => {
+    this.recipeService.getRecipe(this.recipeId).then(recipe => {
       this.recipe = recipe;
-      // if (recipe.imageUrl.trim() === '') {
-      //   this.recipe.imageUrl = this.defaultImage;
-      // }
+      this.servingsModifier = recipe.servings;
       this.loadingRecipe = false;
     }).catch(() => {
-      this.toastService.presentToast('Something went wrong when loading the recipe, try again later');
+      this.popupService.presentToast('Something went wrong when loading the recipe, try again later');
     });
   }
 
@@ -47,19 +47,57 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   public editRecipe(recipe) {
-    this.databaseService.editRecipe(recipe)
-      .catch(() => {
-        this.toastService.presentToast(`Something went wrong when editing ${recipe.name}, try again later`);
-      })
-      .then(() => {
-        this.toastService.presentToast(`Edited ${recipe.name}`);
-        this.editing = false;
-        this.loadingRecipe = true;
-        this.loadRecipe();
-    });
+    if (recipe !== null) {
+      this.recipeService.editRecipe(recipe)
+        .catch(() => {
+          this.popupService.presentToast(`Something went wrong when editing ${recipe.name}, try again later`);
+        })
+        .then(() => {
+          this.popupService.presentToast(`Edited ${recipe.name}`);
+          this.editing = false;
+          this.loadingRecipe = true;
+          this.loadRecipe();
+        });
+    } else {
+      this.editing = false;
+    }
+  }
+
+  public getModifiedAmount(amount) {
+    return Math.round(((amount/this.recipe.servings) * this.servingsModifier) * 100) / 100;
   }
 
   public getImage() {
-    return this.recipe.imageUrl ? this.recipe.imageUrl : this.defaultImage;
+    return this.recipe.imageUrl ? this.recipe.imageUrl : this.imageService.getDefaultImage();
+  }
+
+  public openRemoveRecipe() {
+    this.popupService.showPrompt(
+      `Remove ${this.recipe.name}`,
+      `Are you certain that you want to remove ${this.recipe.name}?`,
+      [],
+      [
+        {
+          text: 'Cancel',
+        },
+        {
+          text: 'Yes I\'m sure',
+          handler: () => {
+            this.removeRecipe();
+          }
+        }
+      ]
+    );
+  }
+
+  private removeRecipe() {
+    this.recipeService.removeRecipe(this.recipe)
+      .catch(() => {
+        this.popupService.presentToast('Something went wrong while removing the recipe, try again later');
+      })
+      .then(() => {
+        this.popupService.presentToast(`${this.recipe.name} was removed`);
+        this.navigateBack();
+      })
   }
 }

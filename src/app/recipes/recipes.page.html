@@ -23,7 +23,7 @@
     </ion-item>
     <ion-item *ngFor="let recipe of recipes" (click)="navigateToDetail(recipe.id)">
       <ion-avatar slot="start">
-        <img [src]="recipe.imageUrl" alt="{{recipe.name}}"/>
+        <img [src]="getImage(recipe)" alt="{{recipe.name}}"/>
       </ion-avatar>
       <ion-label>
         {{recipe.name}}

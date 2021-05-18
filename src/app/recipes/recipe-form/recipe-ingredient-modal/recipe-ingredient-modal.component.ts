@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {AlertController, ModalController} from '@ionic/angular';
-import {DatabaseService} from '../../../services/database.service';
+import {ModalController} from '@ionic/angular';
 import {IngredientModel} from '../../../models/ingredient.model';
-import {ToastService} from '../../../services/toast.service';
+import {PopupService} from '../../../services/popup.service';
+import {RecipeService} from "../../../services/recipe.service";
 
 @Component({
   selector: 'app-recipe-ingredient-modal',
@@ -23,9 +23,8 @@ export class RecipeIngredientModalComponent implements OnInit {
 
   constructor(
     private modalController: ModalController,
-    private alertController: AlertController,
-    private toastService: ToastService,
-    private databaseService: DatabaseService
+    private popupService: PopupService,
+    private recipeService: RecipeService
   ) {
   }
 
@@ -34,9 +33,9 @@ export class RecipeIngredientModalComponent implements OnInit {
   }
 
   private loadIngredients() {
-    this.databaseService.getDatabaseState().subscribe(result => {
+    this.recipeService.getDatabaseState().subscribe(result => {
       if (result) {
-        this.databaseService.getIngredients().then(ingredients => {
+        this.recipeService.getIngredients().then(ingredients => {
           this.ingredients = ingredients;
           this.loadingIngredients = false;
         });
@@ -49,38 +48,37 @@ export class RecipeIngredientModalComponent implements OnInit {
   }
 
   public async openAddIngredient() {
-    const prompt = await this.alertController.create({
-      header: 'Add ingredient',
-      message: 'Enter the name of the new ingredient',
-      inputs: [
+    await this.popupService.showPrompt(
+      'Add ingredient',
+      'Enter the name of the new ingredient',
+      [
         {
           name: 'ingredient',
-          placeholder: 'Potato',
-        },
+          placeholder: 'potato',
+        }
       ],
-      buttons: [
+      [
         {
           text: 'Cancel',
         },
         {
           text: 'Save',
           handler: data => {
-            this.addIngredient(data.ingredient);
+            this.addIngredient(data.ingredient)
           }
         }
       ]
-    });
-    prompt.present();
+    );
   }
 
   public addIngredient(ingredient: string) {
     this.loadingIngredients = true;
-    this.databaseService.addIngredient(ingredient)
+    this.recipeService.addIngredient(ingredient)
       .catch(() => {
-        this.toastService.presentToast('Something went wrong when adding the ingredient, try again later');
+        this.popupService.presentToast('Something went wrong when adding the ingredient, try again later');
       })
       .then(() => {
-        this.toastService.presentToast('Ingredient added');
+        this.popupService.presentToast('Ingredient added');
         this.loadIngredients();
       });
   }

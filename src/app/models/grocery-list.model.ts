@@ -4,5 +4,5 @@ export class GroceryListModel {
   id: number;
   name: string;
   createdDatetime: Date;
-  ingredients: Array<MeasuredIngredientModel>;
+  groceries: Array<MeasuredIngredientModel>;
 }

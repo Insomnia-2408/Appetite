@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {GroceryListService} from "../services/grocery-list.service";
+import {GroceryListModel} from "../models/grocery-list.model";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-grocery-list',
@@ -7,9 +10,34 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GroceryListPage implements OnInit {
 
-  constructor() { }
+  public groceryLists: GroceryListModel[];
+  public loadingGroceryLists = true;
+
+  constructor(
+    private groceryListService: GroceryListService,
+    private router: Router,
+  ) { }
 
   ngOnInit() {
+    this.loadGroceryLists();
   }
 
+  public loadGroceryLists() {
+    this.groceryListService.getDatabaseState().subscribe(result => {
+      if (result) {
+        this.groceryListService.getGroceryLists().then(groceryLists => {
+          this.groceryLists = groceryLists;
+          this.loadingGroceryLists = false;
+        });
+      }
+    });
+  }
+
+  ionViewWillEnter() {
+    this.loadGroceryLists();
+  }
+
+  public navigateToDetail(id: number) {
+    this.router.navigate([`/grocery-list/${id}`]);
+  }
 }

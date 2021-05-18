@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS grocery_list_ingredients(
   ingredient_id INTEGER,
   amount INTEGER,
   unit TEXT,
+  checked INTEGER,
   FOREIGN KEY(grocery_list_id) REFERENCES grocery_lists(id),
   FOREIGN KEY(ingredient_id) REFERENCES ingredients(id)
 );

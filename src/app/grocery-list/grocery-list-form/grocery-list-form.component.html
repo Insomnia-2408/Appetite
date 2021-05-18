@@ -1,0 +1,50 @@
+<div fxLayout="column">
+  <form [formGroup]="groceryListForm">
+    <ion-item class="ion-margin-horizontal">
+      <ion-label position="floating">Name</ion-label>
+      <ion-input type="text" formControlName="name"></ion-input>
+    </ion-item>
+    <div class="ion-padding">
+      <ion-list class="ion-no-padding" lines="none">
+        <ion-list-header class="ion-no-padding">Groceries
+          <ion-button fill="clear" (click)="addIngredientToGroceryList()">
+            <ion-icon name="add"></ion-icon>
+          </ion-button>
+        </ion-list-header>
+        <div formArrayName="groceries"
+             *ngFor="let ingredient of groceryListForm.controls.groceries['controls']; let i=index">
+          <div class="ion-padding-bottom" [formGroupName]="i" fxLayout="row" fxLayoutGap="5px"
+               fxLayoutAlign="space-between center" fxFlexFill>
+            <ion-item class="ion-no-padding" fxFlex="10" fxLayout="column" fxLayoutAlign="center center">
+              <ion-checkbox class="ion-no-margin" slot="start" formControlName="checked"></ion-checkbox>
+            </ion-item>
+            <div class="ion-no-padding" fxFlex="40" fxLayoutAlign="space-between center">
+              <ion-item class="ion-no-padding" fxFlex="85">
+                <ion-label position="stacked">Ingredient</ion-label>
+                <ion-select formControlName="id" placeholder="{{getIngredientName(i)}}">
+                  <ion-select-option *ngFor="let ingredient of ingredients"
+                                     [value]="ingredient.id">{{ingredient.name}}</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-button fxFlex="15" class="ion-no-padding ion-no-margin" (click)="openAddIngredient()" fill="clear">
+                <ion-icon name="add-outline"></ion-icon>
+              </ion-button>
+            </div>
+            <ion-item class="ion-no-padding" fxFlex="25">
+              <ion-label position="stacked">Amount</ion-label>
+              <ion-input type="text" formControlName="amount"></ion-input>
+            </ion-item>
+            <ion-item class="ion-no-padding" fxFlex="15">
+              <ion-label position="stacked">Unit</ion-label>
+              <ion-input type="text" formControlName="unit"></ion-input>
+            </ion-item>
+            <ion-button class="ion-no-padding ion-no-margin" fill="clear" (click)="removeGrocery(i)">
+              <ion-icon name="close"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+      </ion-list>
+    </div>
+  </form>
+  <ion-button *ngIf="!groceryListIn" (click)="emitGroceryList()">Save</ion-button>
+</div>
