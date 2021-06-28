@@ -5,8 +5,8 @@ import {IngredientModel} from '../../models/ingredient.model';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {MeasuredIngredientModel} from '../../models/measured-ingredient.model';
 import {RecipeModel} from '../../models/recipe.model';
-import {ImageService} from "../../services/image.service";
-import {RecipeService} from "../../services/recipe.service";
+import {ImageService} from '../../services/image.service';
+import {RecipeService} from '../../services/recipe.service';
 
 @Component({
   selector: 'app-recipe-form',

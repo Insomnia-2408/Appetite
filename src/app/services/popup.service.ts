@@ -17,7 +17,7 @@ export class PopupService {
     await toast.present();
   }
 
-  public async showPrompt(header: string, message: string, inputs: Array<input>, buttons: Array<button>) {
+  public async showPrompt(header: string, message: string, inputs: Array<Input>, buttons: Array<Button>) {
       const prompt = await this.alertController.create({
         header,
         message,
@@ -28,12 +28,12 @@ export class PopupService {
   }
 }
 
-interface input {
+interface Input {
   name: string;
   placeholder: string;
 }
 
-interface button {
+interface Button {
   text: string;
   handler?: any;
 }

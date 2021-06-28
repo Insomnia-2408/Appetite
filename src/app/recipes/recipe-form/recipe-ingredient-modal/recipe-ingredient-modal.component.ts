@@ -3,7 +3,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ModalController} from '@ionic/angular';
 import {IngredientModel} from '../../../models/ingredient.model';
 import {PopupService} from '../../../services/popup.service';
-import {RecipeService} from "../../../services/recipe.service";
+import {RecipeService} from '../../../services/recipe.service';
 
 @Component({
   selector: 'app-recipe-ingredient-modal',
@@ -64,7 +64,7 @@ export class RecipeIngredientModalComponent implements OnInit {
         {
           text: 'Save',
           handler: data => {
-            this.addIngredient(data.ingredient)
+            this.addIngredient(data.ingredient);
           }
         }
       ]

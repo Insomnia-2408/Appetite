@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {RecipeModel} from '../../models/recipe.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PopupService} from '../../services/popup.service';
-import {RecipeService} from "../../services/recipe.service";
-import {ImageService} from "../../services/image.service";
+import {RecipeService} from '../../services/recipe.service';
+import {ImageService} from '../../services/image.service';
+import {ModalController} from '@ionic/angular';
+import {AddToGroceriesModalComponent} from './add-to-groceries-modal/add-to-groceries-modal.component';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -22,7 +24,8 @@ export class RecipeDetailComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private recipeService: RecipeService,
     private popupService: PopupService,
-    private imageService: ImageService
+    private imageService: ImageService,
+    private modalController: ModalController,
   ) { }
 
   ngOnInit() {
@@ -64,7 +67,7 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   public getModifiedAmount(amount) {
-    return Math.round(((amount/this.recipe.servings) * this.servingsModifier) * 100) / 100;
+    return Math.round(((amount / this.recipe.servings) * this.servingsModifier) * 100) / 100;
   }
 
   public getImage() {
@@ -98,6 +101,16 @@ export class RecipeDetailComponent implements OnInit {
       .then(() => {
         this.popupService.presentToast(`${this.recipe.name} was removed`);
         this.navigateBack();
-      })
+      });
+  }
+
+  public async addIngredientsToGroceryList() {
+    const modal = await this.modalController.create({
+      component: AddToGroceriesModalComponent,
+      componentProps: {
+        recipe: this.recipe,
+      }
+    });
+    return await modal.present();
   }
 }

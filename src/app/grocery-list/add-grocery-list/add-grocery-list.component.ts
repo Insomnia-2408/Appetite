@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from "@angular/router";
-import {GroceryListService} from "../../services/grocery-list.service";
-import {IngredientModel} from "../../models/ingredient.model";
-import {GroceryListModel} from "../../models/grocery-list.model";
-import {PopupService} from "../../services/popup.service";
+import {Router} from '@angular/router';
+import {GroceryListService} from '../../services/grocery-list.service';
+import {IngredientModel} from '../../models/ingredient.model';
+import {GroceryListModel} from '../../models/grocery-list.model';
+import {PopupService} from '../../services/popup.service';
 
 @Component({
   selector: 'app-add-grocery-list',
@@ -48,6 +48,6 @@ export class AddGroceryListComponent implements OnInit {
       .then(() => {
         this.toastService.presentToast('Added grocery list');
         this.navigateBack();
-      })
+      });
   }
 }

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {IngredientModel} from '../../models/ingredient.model';
 import {PopupService} from '../../services/popup.service';
-import {RecipeService} from "../../services/recipe.service";
+import {RecipeService} from '../../services/recipe.service';
 
 @Component({
   selector: 'app-add-recipe',

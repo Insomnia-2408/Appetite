@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
-import {DatabaseService} from "./database.service";
-import {Platform} from "@ionic/angular";
-import {SQLitePorter} from "@ionic-native/sqlite-porter/ngx";
-import {SQLite} from "@ionic-native/sqlite/ngx";
-import {HttpClient} from "@angular/common/http";
-import {GroceryListModel} from "../models/grocery-list.model";
-import {MeasuredIngredientModel} from "../models/measured-ingredient.model";
+import {Injectable} from '@angular/core';
+import {DatabaseService} from './database.service';
+import {Platform} from '@ionic/angular';
+import {SQLitePorter} from '@ionic-native/sqlite-porter/ngx';
+import {SQLite} from '@ionic-native/sqlite/ngx';
+import {HttpClient} from '@angular/common/http';
+import {GroceryListModel} from '../models/grocery-list.model';
+import {MeasuredIngredientModel} from '../models/measured-ingredient.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GroceryListService extends DatabaseService{
+export class GroceryListService extends DatabaseService {
 
   constructor(
     protected plt: Platform,
@@ -153,6 +153,7 @@ export class GroceryListService extends DatabaseService{
         })
         .then(groceryListGroceries => {
           const changes = this.compareGroceries(groceryListGroceries, groceries);
+          console.log(JSON.stringify(changes.removedGroceries));
           Promise.all([
             this.removeGroceryListGroceries(groceryListId, changes.removedGroceries),
             this.editGroceryListGroceries(groceryListId, changes.updatedGroceries),
@@ -169,12 +170,12 @@ export class GroceryListService extends DatabaseService{
   }
 
   private compareGroceries(existingGroceries, newGroceries) {
-    const removedGroceries: number[] = [];
+    const removedGroceries: MeasuredIngredientModel[] = [];
     const updatedGroceries: MeasuredIngredientModel[] = [];
     const addedGroceries: MeasuredIngredientModel[] = [];
     existingGroceries.forEach(existingGrocery => {
       if (!newGroceries.map(newGrocery => newGrocery.id).includes(existingGrocery.id)) {
-        removedGroceries.push(existingGrocery.id);
+        removedGroceries.push(existingGrocery);
       }
       if (newGroceries.map(newGrocery => newGrocery.id).includes(existingGrocery.id)) {
         const newGrocery = newGroceries.find(ingredient => ingredient.id === existingGrocery.id);
@@ -195,16 +196,16 @@ export class GroceryListService extends DatabaseService{
     return {removedGroceries, updatedGroceries, addedGroceries};
   }
 
-  private removeGroceryListGroceries(groceryListId: number, groceries: number[]): Promise<boolean> {
+  private removeGroceryListGroceries(groceryListId: number, groceries: MeasuredIngredientModel[]): Promise<boolean> {
     return new Promise<boolean>(((resolve, reject) => {
       if (groceries.length === 0) {
         return resolve();
       }
       this.database.transaction(tx => {
-        groceries.forEach(groceryId => {
+        groceries.forEach(grocery => {
           tx.executeSql(
             'DELETE FROM grocery_list_ingredients WHERE grocery_list_id=? AND ingredient_id=?',
-            [groceryListId, groceryId]
+            [groceryListId, grocery.id]
           );
         });
       })
@@ -249,14 +250,14 @@ export class GroceryListService extends DatabaseService{
           return reject();
         })
         .then(() => {
-          this.removeGroceryListGroceries(groceryList.id, groceryList.groceries.map(grocery => grocery.id))
+          this.removeGroceryListGroceries(groceryList.id, groceryList.groceries)
             .catch(() => {
               return reject();
             })
             .then(() => {
               return resolve();
-            })
-        })
+            });
+        });
     }));
   }
 }

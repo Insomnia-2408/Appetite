@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
-import {GroceryListModel} from "../../models/grocery-list.model";
-import {IngredientModel} from "../../models/ingredient.model";
-import {GroceryListService} from "../../services/grocery-list.service";
-import {PopupService} from "../../services/popup.service";
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {GroceryListModel} from '../../models/grocery-list.model';
+import {IngredientModel} from '../../models/ingredient.model';
+import {GroceryListService} from '../../services/grocery-list.service';
+import {PopupService} from '../../services/popup.service';
 
 @Component({
   selector: 'app-grocery-list-form',
@@ -71,8 +71,8 @@ export class GroceryListFormComponent implements OnInit {
     (this.groceryListForm.controls.groceries as FormArray).removeAt(index);
   }
 
-  public getIngredientName(controlIndex: any):string {
-    if (!this.ingredients || !controlIndex) {
+  public getIngredientName(controlIndex: any): string {
+    if (this.ingredients.length === 0 || controlIndex === null) {
       return '';
     }
     const ingredientId = this.groceryListForm.controls.groceries.value[controlIndex].id;
@@ -96,7 +96,7 @@ export class GroceryListFormComponent implements OnInit {
         {
           text: 'Save',
           handler: data => {
-            this.addIngredient(data.ingredient)
+            this.addIngredient(data.ingredient);
           }
         }
       ]

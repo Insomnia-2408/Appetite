@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {GroceryListService} from "../services/grocery-list.service";
-import {GroceryListModel} from "../models/grocery-list.model";
-import {Router} from "@angular/router";
+import {GroceryListService} from '../services/grocery-list.service';
+import {GroceryListModel} from '../models/grocery-list.model';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-grocery-list',
@@ -35,9 +35,5 @@ export class GroceryListPage implements OnInit {
 
   ionViewWillEnter() {
     this.loadGroceryLists();
-  }
-
-  public navigateToDetail(id: number) {
-    this.router.navigate([`/grocery-list/${id}`]);
   }
 }

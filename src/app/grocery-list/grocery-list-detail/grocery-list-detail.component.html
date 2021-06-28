@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>{{loadingGroceryList ? 'Loading...' : groceryList.name}}</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button (click)="navigateBack()"></ion-back-button>
+      <ion-back-button defaultHref="/grocery-list"></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button (click)="share()">

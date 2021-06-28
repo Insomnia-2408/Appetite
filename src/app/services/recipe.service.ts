@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import {DatabaseService} from "./database.service";
-import {Platform} from "@ionic/angular";
-import {SQLitePorter} from "@ionic-native/sqlite-porter/ngx";
-import {SQLite} from "@ionic-native/sqlite/ngx";
-import {HttpClient} from "@angular/common/http";
-import {RecipeModel} from "../models/recipe.model";
-import {MeasuredIngredientModel} from "../models/measured-ingredient.model";
+import {DatabaseService} from './database.service';
+import {Platform} from '@ionic/angular';
+import {SQLitePorter} from '@ionic-native/sqlite-porter/ngx';
+import {SQLite} from '@ionic-native/sqlite/ngx';
+import {HttpClient} from '@angular/common/http';
+import {RecipeModel} from '../models/recipe.model';
+import {MeasuredIngredientModel} from '../models/measured-ingredient.model';
 
 @Injectable({
   providedIn: 'root'
@@ -256,8 +256,8 @@ export class RecipeService extends DatabaseService {
           })
           .then(() => {
             return resolve();
-          })
-      })
+          });
+      });
     }));
   }
 

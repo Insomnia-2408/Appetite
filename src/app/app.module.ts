@@ -12,7 +12,7 @@ import {SQLitePorter} from '@ionic-native/sqlite-porter/ngx';
 import {HttpClientModule} from '@angular/common/http';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FlexModule} from '@angular/flex-layout';
-import {SocialSharing} from "@ionic-native/social-sharing/ngx";
+import {SocialSharing} from '@ionic-native/social-sharing/ngx';
 
 @NgModule({
   declarations: [AppComponent],

@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {RecipeModel} from '../models/recipe.model';
 import {Router} from '@angular/router';
-import {ImageService} from "../services/image.service";
-import {RecipeService} from "../services/recipe.service";
+import {ImageService} from '../services/image.service';
+import {RecipeService} from '../services/recipe.service';
 
 @Component({
   selector: 'app-recipes',
@@ -38,10 +38,6 @@ export class RecipesPage implements OnInit {
 
   ionViewWillEnter() {
     this.loadRecipes();
-  }
-
-  public navigateToDetail(id: number) {
-    this.router.navigate([`/recipes/${id}`]);
   }
 
   public getImage(recipe: RecipeModel) {

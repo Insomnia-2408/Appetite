@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add ingredients to grocery list</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="modalController.dismiss(null)">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-spinner *ngIf="loadingGroceryLists"></ion-spinner>
+  <form [formGroup]="groceryListForm" *ngIf="!loadingGroceryLists">
+    <ion-list class="ion-padding">
+      <ion-list-header class="ion-no-padding">Add a ingredient to grocery list</ion-list-header>
+      <div fxLayout="row" fxLayoutAlign=" center">
+        <ion-item fxFlex="95" class="ion-no-padding">
+          <ion-label>Grocery list</ion-label>
+          <ion-select formControlName="id">
+            <ion-select-option *ngFor="let groceryList of groceryLists"
+                               [value]="groceryList.id">{{groceryList.name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+      <ion-item class="ion-no-padding" *ngIf="groceryListForm.get('ingredients').value.length > 0">
+        <div fxLayout="column" fxFlexFill>
+          <p>Ingredients</p>
+          <table>
+            <tr>
+              <th>Name</th>
+              <th>Amount</th>
+              <th>Unit</th>
+            </tr>
+            <tr *ngFor="let ingredient of groceryListForm.get('ingredients').value">
+              <td>{{ingredient.name}}</td>
+              <td>{{ingredient.amount}}</td>
+              <td>{{ingredient.unit}}</td>
+              <td>
+                <ion-button (click)="removeIngredient(ingredient)">
+                  <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </ion-item>
+      <ion-button (click)="addGroceries()"
+                  *ngIf="groceryListForm.get('ingredients').value.length > 0" [disabled]="this.groceryListForm.invalid">
+        Add ingredients to grocery list
+      </ion-button>
+    </ion-list>
+  </form>
+
+  <div  class="ion-padding" *ngIf="getExistingGroceries().length > 0" fxLayout="column" fxFlexFill>
+    <p>Ingredients in grocery list</p>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Amount</th>
+        <th>Unit</th>
+      </tr>
+      <tr *ngFor="let ingredient of getExistingGroceries()">
+        <td>{{ingredient.name}}</td>
+        <td>{{ingredient.amount}}</td>
+        <td>{{ingredient.unit}}</td>
+      </tr>
+    </table>
+  </div>
+
+</ion-content>

@@ -12,6 +12,7 @@ import {FlexModule} from '@angular/flex-layout';
 import {RecipeIngredientModalComponent} from './recipe-form/recipe-ingredient-modal/recipe-ingredient-modal.component';
 import {RecipeDetailComponent} from './recipe-detail/recipe-detail.component';
 import {RecipeFormComponent} from './recipe-form/recipe-form.component';
+import {AddToGroceriesModalComponent} from './recipe-detail/add-to-groceries-modal/add-to-groceries-modal.component';
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import {RecipeFormComponent} from './recipe-form/recipe-form.component';
     RecipeDetailComponent,
     RecipeIngredientModalComponent,
     RecipeFormComponent,
+    AddToGroceriesModalComponent,
   ]
 })
 export class RecipesPageModule {}

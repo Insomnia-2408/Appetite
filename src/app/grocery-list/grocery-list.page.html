@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>Grocery lists</ion-title>
     <ion-buttons slot="end">
-      <ion-button [routerLink]="['/grocery-list/add-grocery-list']" routerDirection="forward">
+      <ion-button [routerLink]="['/', 'grocery-list', 'add-grocery-list']" routerDirection="forward">
         <ion-icon name="add-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -18,12 +18,11 @@
         Wow such empty
       </ion-label>
     </ion-item>
-    <ion-item *ngFor="let groceryList of groceryLists" (click)="navigateToDetail(groceryList.id)">
+    <ion-item *ngFor="let groceryList of groceryLists" [routerLink]="['/', 'grocery-list', groceryList.id]" detail>
       <ion-label fxLayout="row" fxLayoutAlign="space-between">
         <p class="ion-no-padding">{{groceryList.name}}</p>
         <p class="ion-no-padding">{{groceryList.createdDatetime | date: 'short'}}</p>
       </ion-label>
-      <ion-icon slot="end" name="chevron-forward-outline"></ion-icon>
     </ion-item>
   </ion-list>
 </ion-content>

@@ -1,10 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {GroceryListService} from "../../services/grocery-list.service";
-import {GroceryListModel} from "../../models/grocery-list.model";
-import {GroceryListFormComponent} from "../grocery-list-form/grocery-list-form.component";
-import {PopupService} from "../../services/popup.service";
-import {SocialSharing} from "@ionic-native/social-sharing/ngx";
+import {ActivatedRoute, Router} from '@angular/router';
+import {GroceryListService} from '../../services/grocery-list.service';
+import {GroceryListModel} from '../../models/grocery-list.model';
+import {GroceryListFormComponent} from '../grocery-list-form/grocery-list-form.component';
+import {PopupService} from '../../services/popup.service';
+import {SocialSharing} from '@ionic-native/social-sharing/ngx';
 
 @Component({
   selector: 'app-grocery-list-detail',
@@ -84,7 +84,7 @@ export class GroceryListDetailComponent implements OnInit {
       .then(() => {
         this.popupService.presentToast(`${this.groceryList.name} was removed`);
         this.navigateBack();
-      })
+      });
   }
 
   public share() {
