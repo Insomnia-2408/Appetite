@@ -16,7 +16,7 @@
       <div fxLayout="row" fxLayoutAlign=" center">
         <ion-item fxFlex="95" class="ion-no-padding">
           <ion-label>Ingredient</ion-label>
-          <ion-select formControlName="id">
+          <ion-select formControlName="id" [disabled]="ingredients.length === 0">
             <ion-select-option *ngFor="let ingredient of ingredients"
                                [value]="ingredient.id">{{ingredient.name}}</ion-select-option>
           </ion-select>
@@ -25,6 +25,9 @@
           <ion-icon name="add-circle-outline" color="primary"></ion-icon>
         </ion-button>
       </div>
+      <p *ngIf="ingredients.length === 0" class="ion-no-padding">
+        Use the add button to add an ingredient first
+      </p>
       <ion-item class="ion-no-padding">
         <ion-label position="floating">Amount</ion-label>
         <ion-input formControlName="amount" type="number"></ion-input>

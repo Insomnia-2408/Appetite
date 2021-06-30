@@ -35,7 +35,7 @@
       <ion-item class="ion-no-padding">
         <div fxLayout="row" fxLayoutAlign="space-between center" fxFlexFill>
           <p><strong>Servings</strong></p>
-          <div fxLayout="row" fxLayoutAlign="end center">
+          <div *ngIf="recipe.servings !== null" fxLayout="row" fxLayoutAlign="end center">
             <p>{{servingsModifier}}</p>
             <ion-button size="small" fill="clear" (click)="servingsModifier = servingsModifier + 1"><ion-icon name="add"></ion-icon></ion-button>
             <ion-button size="small" fill="clear" (click)="servingsModifier = servingsModifier - 1"><ion-icon name="remove"></ion-icon></ion-button>

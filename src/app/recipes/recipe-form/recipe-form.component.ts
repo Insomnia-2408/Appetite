@@ -7,6 +7,7 @@ import {MeasuredIngredientModel} from '../../models/measured-ingredient.model';
 import {RecipeModel} from '../../models/recipe.model';
 import {ImageService} from '../../services/image.service';
 import {RecipeService} from '../../services/recipe.service';
+import {PopupService} from '../../services/popup.service';
 
 @Component({
   selector: 'app-recipe-form',
@@ -34,7 +35,8 @@ export class RecipeFormComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private recipeService: RecipeService,
-    private imageService: ImageService
+    private imageService: ImageService,
+    private popupService: PopupService,
   ) {
   }
 
@@ -67,7 +69,25 @@ export class RecipeFormComponent implements OnInit {
       if (result.data !== null) {
         this.loadingIngredients = true;
         this.loadIngredients();
-        this.addIngredientToRecipe(result.data);
+        if (
+          this.getRecipeIngredients()
+            .find(recipeIngredient => recipeIngredient.unit === result.data.unit && recipeIngredient.id === result.data.id)
+          !== undefined
+        ) {
+          this.popupService.showPrompt(
+            'Ingredient already exist',
+            'Ingredient already exists with the same unit within the recipe. ' +
+            'Remove the old ingredient first',
+            [],
+            [
+              {
+                text: 'Understood',
+              }
+            ]
+          );
+        } else {
+          this.addIngredientToRecipe(result.data);
+        }
       }
     });
     return await modal.present();

@@ -1,5 +1,8 @@
 <div fxLayout="column">
   <form [formGroup]="groceryListForm">
+    <p *ngIf="groceryListForm.hasError('duplicateGrocery')" class="ion-padding error-message">
+      Duplicate grocery in list! Changes cannot be saved!
+    </p>
     <ion-item class="ion-margin-horizontal">
       <ion-label position="floating">Name</ion-label>
       <ion-input type="text" formControlName="name"></ion-input>

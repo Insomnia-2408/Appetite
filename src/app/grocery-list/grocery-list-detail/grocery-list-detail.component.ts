@@ -36,10 +36,16 @@ export class GroceryListDetailComponent implements OnInit {
   }
 
   ionViewWillLeave() {
-    this.groceryListService.editGroceryList(this.groceryListFormComponent.getGroceryList())
-      .catch(() => {
-        this.popupService.presentToast(`Something went wrong when saving ${this.groceryList.name}`);
-      });
+    try {
+      this.groceryListService.editGroceryList(this.groceryListFormComponent.getGroceryList())
+        .catch(() => {
+          this.popupService.presentToast(`Something went wrong when saving ${this.groceryList.name}`);
+        });
+    } catch (error) {
+      this.popupService.presentToast(
+        `When trying to save the grocery list the following error occured: ${error.getMessage()}`,
+      );
+    }
   }
 
   public loadGroceryList() {

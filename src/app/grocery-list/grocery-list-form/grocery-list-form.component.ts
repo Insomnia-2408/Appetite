@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormControl, FormGroup, ValidationErrors, Validators} from '@angular/forms';
 import {GroceryListModel} from '../../models/grocery-list.model';
 import {IngredientModel} from '../../models/ingredient.model';
 import {GroceryListService} from '../../services/grocery-list.service';
@@ -15,8 +15,8 @@ export class GroceryListFormComponent implements OnInit {
   public groceryListForm = new FormGroup({
     id: new FormControl(''),
     name: new FormControl('', [Validators.required]),
-    groceries: new FormArray([])
-  });
+    groceries: new FormArray([]),
+  }, this.groceriesValidator);
 
   @Input() groceryListIn: GroceryListModel;
   @Output() groceryListOut: EventEmitter<GroceryListModel> = new EventEmitter<GroceryListModel>();
@@ -27,7 +27,8 @@ export class GroceryListFormComponent implements OnInit {
   constructor(
     private groceryListService: GroceryListService,
     private popupService: PopupService,
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.loadIngredients();
@@ -116,6 +117,24 @@ export class GroceryListFormComponent implements OnInit {
   }
 
   public getGroceryList(): GroceryListModel {
+    if (this.groceryListForm.hasError('duplicateGrocery')) {
+      throw Error('Duplicate grocery in grocery list');
+    } else if (this.groceryListForm.invalid) {
+      throw new Error('Grocery list invalid');
+    }
     return this.groceryListForm.getRawValue();
+  }
+
+  private groceriesValidator(form: FormGroup): ValidationErrors {
+    const groceries = form.controls.groceries.value;
+    let validationError = null;
+    groceries.forEach((grocery, index) => {
+      for (let i = 0; i < groceries.length; i++) {
+        if (groceries[i].unit === grocery.unit && groceries[i].id === grocery.id && i !== index) {
+          validationError = {duplicateGrocery: true};
+        }
+      }
+    });
+    return validationError;
   }
 }
