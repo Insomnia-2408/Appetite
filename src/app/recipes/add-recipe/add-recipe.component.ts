@@ -115,26 +115,40 @@ export class AddRecipeComponent implements OnInit {
         const measuredIngredients = [];
         recipeIngredients.forEach(async recipeIngredient => {
           const modifiedIngredientList = recipeIngredient.split(' ');
-          const amount = modifiedIngredientList[0];
-          const unit = modifiedIngredientList[1];
-          const ingredientName = modifiedIngredientList[2];
-          const existingIngredient = ingredients.find(ingredient => ingredient.name.toLowerCase() === ingredientName.toLowerCase());
-          if (existingIngredient === undefined) {
-            await this.recipeService.addIngredient(ingredientName).then(id => {
+          let amount = '';
+          let unit = '';
+          let ingredientName = '';
+          if (modifiedIngredientList.length > 2) {
+            amount = modifiedIngredientList[0];
+            unit = modifiedIngredientList[1];
+            ingredientName = modifiedIngredientList[2];
+          } else if (modifiedIngredientList.length === 2) {
+            amount = modifiedIngredientList[0];
+            ingredientName = modifiedIngredientList[1];
+          } else {
+            ingredientName = modifiedIngredientList[0];
+          }
+          try {
+            const existingIngredient = ingredients.find(ingredient => ingredient.name.toLowerCase() === ingredientName.toLowerCase());
+            if (existingIngredient === undefined) {
+              await this.recipeService.addIngredient(ingredientName).then(id => {
                 measuredIngredients.push({
                   id,
                   ingredientName,
                   amount,
                   unit
                 });
-            });
-          } else {
-            measuredIngredients.push({
-              id: existingIngredient.id,
-              name: existingIngredient.name,
-              amount,
-              unit
-            });
+              });
+            } else {
+              measuredIngredients.push({
+                id: existingIngredient.id,
+                name: existingIngredient.name,
+                amount,
+                unit
+              });
+            }
+          } catch (e) {
+            console.log(`ERROR: ${JSON.stringify(e)}`);
           }
         });
         resolve(measuredIngredients);
