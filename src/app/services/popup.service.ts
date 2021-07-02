@@ -31,6 +31,7 @@ export class PopupService {
 interface Input {
   name: string;
   placeholder: string;
+  type?: 'number' | 'date' | 'email' | 'password' | 'search' | 'tel' | 'text' | 'url' | 'time' | 'week' | 'month' | 'datetime-local' | 'checkbox' | 'radio' | 'textarea';
 }
 
 interface Button {

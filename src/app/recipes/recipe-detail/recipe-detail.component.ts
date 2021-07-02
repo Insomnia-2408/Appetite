@@ -67,6 +67,9 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   public getModifiedAmount(amount) {
+    if (isNaN(amount)) {
+      return amount;
+    }
     return Math.round(((amount / this.recipe.servings) * this.servingsModifier) * 100) / 100;
   }
 

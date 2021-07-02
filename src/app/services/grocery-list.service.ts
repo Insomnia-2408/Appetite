@@ -26,11 +26,11 @@ export class GroceryListService extends DatabaseService {
       this.database.executeSql(
         'SELECT * FROM grocery_lists',
         []
-      ).then(data => {
+      ).then(async data => {
         const groceryLists: GroceryListModel[] = [];
         if (data.rows.length > 0) {
           for (let i = 0; i < data.rows.length; i++) {
-            this.getGroceries(data.rows.item(i).id).then(groceries => {
+            await this.getGroceries(data.rows.item(i).id).then(groceries => {
               groceryLists.push({
                 id: data.rows.item(i).id,
                 name: data.rows.item(i).name,
@@ -68,8 +68,8 @@ export class GroceryListService extends DatabaseService {
     }));
   }
 
-  public addGroceryList(groceryList: GroceryListModel): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  public addGroceryList(groceryList: GroceryListModel): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       this.database.executeSql(
         'INSERT INTO grocery_lists (name, created_datetime) VALUES(?, ?)',
         [groceryList.name, new Date()]
@@ -87,8 +87,8 @@ export class GroceryListService extends DatabaseService {
     }));
   }
 
-  private addGroceries(groceryListId: number, groceries: Array<MeasuredIngredientModel>): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  private addGroceries(groceryListId: number, groceries: Array<MeasuredIngredientModel>): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       this.database.transaction(tx => {
         groceries.forEach(grocery => {
           tx.executeSql(
@@ -108,9 +108,9 @@ export class GroceryListService extends DatabaseService {
       this.database.executeSql(
         'SELECT * FROM grocery_lists WHERE id=?',
         [groceryListId]
-      ).then(data => {
+      ).then(async data => {
         if (data.rows.length > 0) {
-          this.getGroceries(groceryListId).then(groceries => {
+          await this.getGroceries(groceryListId).then(groceries => {
             const groceryList = {
               id: data.rows.item(0).id,
               name: data.rows.item(0).name,
@@ -126,8 +126,8 @@ export class GroceryListService extends DatabaseService {
     }));
   }
 
-  public editGroceryList(groceryList: GroceryListModel): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  public editGroceryList(groceryList: GroceryListModel): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       this.database.executeSql(
         'UPDATE grocery_lists SET name=? WHERE id=?',
         [groceryList.name, groceryList.id]
@@ -146,14 +146,13 @@ export class GroceryListService extends DatabaseService {
   }
 
   private updateGroceries(groceryListId: number, groceries: Array<MeasuredIngredientModel>) {
-    return new Promise<boolean>(((resolve, reject) => {
+    return new Promise<void>(((resolve, reject) => {
       this.getGroceries(groceryListId)
         .catch(() => {
           return reject();
         })
         .then(groceryListGroceries => {
           const changes = this.compareGroceries(groceryListGroceries, groceries);
-          console.log(JSON.stringify(changes.removedGroceries));
           Promise.all([
             this.removeGroceryListGroceries(groceryListId, changes.removedGroceries),
             this.editGroceryListGroceries(groceryListId, changes.updatedGroceries),
@@ -196,8 +195,8 @@ export class GroceryListService extends DatabaseService {
     return {removedGroceries, updatedGroceries, addedGroceries};
   }
 
-  private removeGroceryListGroceries(groceryListId: number, groceries: MeasuredIngredientModel[]): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  private removeGroceryListGroceries(groceryListId: number, groceries: MeasuredIngredientModel[]): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       if (groceries.length === 0) {
         return resolve();
       }
@@ -218,8 +217,8 @@ export class GroceryListService extends DatabaseService {
     }));
   }
 
-  private editGroceryListGroceries(groceryListId: number, groceries: MeasuredIngredientModel[]): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  private editGroceryListGroceries(groceryListId: number, groceries: MeasuredIngredientModel[]): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       if (groceries.length === 0) {
         return resolve();
       }
@@ -240,8 +239,8 @@ export class GroceryListService extends DatabaseService {
     }));
   }
 
-  public removeGroceryList(groceryList: GroceryListModel): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  public removeGroceryList(groceryList: GroceryListModel): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       this.database.executeSql(
         'DELETE FROM grocery_lists WHERE id=?',
         [groceryList.id]
@@ -259,5 +258,18 @@ export class GroceryListService extends DatabaseService {
             });
         });
     }));
+  }
+
+  public addEmptyGroceryList(groceryListName: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.database.executeSql(
+        'INSERT INTO grocery_lists (name, created_datetime) VALUES(?, ?)',
+        [groceryListName, new Date()]
+      ).catch(() => {
+        return reject();
+      }).then(() => {
+        return resolve();
+      });
+    });
   }
 }

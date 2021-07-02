@@ -4,10 +4,13 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/recipes"></ion-back-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="openImportRecipe()">IMPORT</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-spinner *ngIf="loadingIngredients" class="ion-align-self-center"></ion-spinner>
-  <app-recipe-form *ngIf="!loadingIngredients" (recipeOut)="saveRecipe($event)"></app-recipe-form>
+  <app-recipe-form *ngIf="!loadingIngredients" (recipeOut)="saveRecipe($event)" #recipeFormComponent></app-recipe-form>
 </ion-content>

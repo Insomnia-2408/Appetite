@@ -48,17 +48,9 @@ export class AddToGroceriesModalComponent implements OnInit {
     this.groceryListService.getGroceryLists().then(groceryLists => {
       this.groceryLists = groceryLists;
       this.loadingGroceryLists = false;
-      this.checkGroceryLists();
     }).catch(() => {
       this.popupService.presentToast('Something went wrong when loading the grocery lists, try again later');
     });
-  }
-
-  private checkGroceryLists() {
-    if (this.groceryLists.length === 0) {
-      this.modalController.dismiss();
-      this.popupService.presentToast('No grocery lists available to add ingredients!');
-    }
   }
 
   addGroceries() {
@@ -73,30 +65,6 @@ export class AddToGroceriesModalComponent implements OnInit {
         selectedGroceryList.groceries.push(ingredient);
       }
     });
-    // ingredients = this.removeDuplicateIngredients(ingredients);
-    // console.log(ingredients);
-    // const groceriesToAdd = [];
-    // selectedGroceryList.groceries.forEach(grocery => {
-    //   const ingredientInGroceryList = ingredients.find(ingredient => ingredient.id === grocery.id);
-    //   if (ingredientInGroceryList === null) {
-    //   }
-    // });
-    // ingredients.forEach(ingredient => {
-    //   let groceryExists;
-    //   try {
-    //     groceryExists = this.groceryExists(ingredient, selectedGroceryList);
-    //   } catch (error) {
-    //     this.popupService.presentToast(
-    //       `${ingredient} already exist in grocery list in different unit, it will have to be added manually`
-    //     );
-    //   }
-    //   if (groceryExists) {
-    //     const ingredientIndex = selectedGroceryList.groceries.findIndex(grocery => grocery.id === ingredient.id);
-    //     selectedGroceryList.groceries[ingredientIndex].amount += ingredient.amount;
-    //   } else {
-    //     selectedGroceryList.groceries.push(ingredient);
-    //   }
-    // });
     this.groceryListService.editGroceryList(selectedGroceryList)
       .catch(() => {
         this.popupService.presentToast(`Something went wrong when saving ${selectedGroceryList.name}`);
@@ -105,32 +73,6 @@ export class AddToGroceriesModalComponent implements OnInit {
         this.popupService.presentToast(`Added ingredients to grocery list ${selectedGroceryList.name}`);
         this.modalController.dismiss();
       });
-  }
-
-  private groceryExists(ingredient: MeasuredIngredientModel, selectedGroceryList: GroceryListModel): boolean {
-    const existingGroceryIndex = selectedGroceryList.groceries.findIndex(grocery => grocery.id === ingredient.id);
-    if (existingGroceryIndex !== null) {
-      if (selectedGroceryList.groceries[existingGroceryIndex].unit === ingredient.unit) {
-        selectedGroceryList.groceries[existingGroceryIndex].amount += ingredient.amount;
-        return true;
-      } else if (selectedGroceryList.groceries[existingGroceryIndex].unit !== ingredient.unit) {
-        throw new Error('Same ingredient with different unit already in grocery list!');
-      }
-    }
-    return false;
-  }
-
-  private removeDuplicateIngredients(ingredients: MeasuredIngredientModel[]) {
-    const resolvedIngredientIds = [];
-    const ingredientsWithoutDuplicates = [];
-    ingredients.forEach(ingredient => {
-      if (!resolvedIngredientIds.includes(ingredient.id)) {
-        const newIngredient = this.resolveDuplicateIngredients(ingredient, ingredients);
-        ingredientsWithoutDuplicates.push(newIngredient);
-        resolvedIngredientIds.push(ingredient.id);
-      }
-    });
-    return ingredientsWithoutDuplicates;
   }
 
   removeIngredient(ingredient: MeasuredIngredientModel) {
@@ -182,5 +124,42 @@ export class AddToGroceriesModalComponent implements OnInit {
       }
     });
     return ingredientToCheck;
+  }
+
+  public async openAddGroceryList() {
+    await this.popupService.showPrompt(
+      'Add grocery list',
+      'Enter the name of the new grocery-list',
+      [
+        {
+          name: 'groceryList',
+          type: 'text',
+          placeholder: 'Dinner',
+        }
+      ],
+      [
+        {
+          text: 'Cancel',
+        },
+        {
+          text: 'Save',
+          handler: data => {
+            this.addGroceryList(data.groceryList);
+          }
+        }
+      ]
+    );
+  }
+
+  private addGroceryList(groceryListName: string) {
+    this.groceryListService.addEmptyGroceryList(groceryListName)
+      .catch(() => {
+        this.popupService.presentToast('Something went wrong when adding the grocery list, try again later');
+      })
+      .then(() => {
+        this.popupService.presentToast('Grocery list created');
+        this.loadingGroceryLists = true;
+        this.loadGroceryLists();
+      });
   }
 }

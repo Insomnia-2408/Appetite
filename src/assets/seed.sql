@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS grocery_list_ingredients(
 
 CREATE TABLE IF NOT EXISTS food_diary(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  created_datetime TEXT
+  created_datetime TEXT,
+  notes TEXT
 );
 
 CREATE TABLE IF NOT EXISTS food_diary_items(

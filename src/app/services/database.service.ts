@@ -68,15 +68,15 @@ export class DatabaseService {
     }));
   }
 
-  public addIngredient(ingredient): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  public addIngredient(ingredient): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       this.database.executeSql(
         'INSERT INTO ingredients (name) VALUES (?)',
         [ingredient]
       ).catch(() => {
         return reject();
-      }).then(() => {
-        return resolve();
+      }).then(data => {
+        return resolve(data.insertId);
       });
     }));
   }

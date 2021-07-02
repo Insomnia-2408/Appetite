@@ -26,11 +26,11 @@ export class RecipeService extends DatabaseService {
       this.database.executeSql(
         'SELECT * FROM recipes',
         []
-      ).then(data => {
+      ).then(async data => {
         const recipes: RecipeModel[] = [];
         if (data.rows.length > 0) {
           for (let i = 0; i < data.rows.length; i++) {
-            this.getRecipeIngredients(data.rows.item(i).id).then(ingredients => {
+            await this.getRecipeIngredients(data.rows.item(i).id).then(ingredients => {
               recipes.push({
                 id: data.rows.item(i).id,
                 name: data.rows.item(i).name,
@@ -53,9 +53,9 @@ export class RecipeService extends DatabaseService {
       this.database.executeSql(
         'SELECT * FROM recipes WHERE id=?',
         [recipeId]
-      ).then(data => {
+      ).then(async data => {
         if (data.rows.length > 0) {
-          this.getRecipeIngredients(recipeId).then(ingredients => {
+          await this.getRecipeIngredients(recipeId).then(ingredients => {
             const recipe = {
               id: data.rows.item(0).id,
               name: data.rows.item(0).name,
@@ -96,8 +96,8 @@ export class RecipeService extends DatabaseService {
     }));
   }
 
-  public addRecipe(recipe: RecipeModel): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  public addRecipe(recipe: RecipeModel): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       this.database.executeSql(
         'INSERT INTO recipes (name, description, instructions, image_url, servings) VALUES(?, ?, ?, ?, ?)',
         [recipe.name, recipe.description, recipe.instructions, recipe.imageUrl, recipe.servings]
@@ -115,8 +115,8 @@ export class RecipeService extends DatabaseService {
     }));
   }
 
-  private addRecipeIngredients(recipeId, ingredients: MeasuredIngredientModel[]): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  private addRecipeIngredients(recipeId, ingredients: MeasuredIngredientModel[]): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       this.database.transaction(tx => {
         ingredients.forEach(ingredient => {
           tx.executeSql(
@@ -131,8 +131,8 @@ export class RecipeService extends DatabaseService {
     }));
   }
 
-  public editRecipe(recipe: RecipeModel): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  public editRecipe(recipe: RecipeModel): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       this.database.executeSql(
         'UPDATE recipes SET name=?, description=?, instructions=?, image_url=?, servings=? WHERE id=?',
         [recipe.name, recipe.description, recipe.instructions, recipe.imageUrl, recipe.servings, recipe.id]
@@ -150,8 +150,8 @@ export class RecipeService extends DatabaseService {
     }));
   }
 
-  private updateRecipeIngredients(recipeId, ingredients: MeasuredIngredientModel[]): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  private updateRecipeIngredients(recipeId, ingredients: MeasuredIngredientModel[]): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       this.getRecipeIngredients(recipeId)
         .catch(() => {
           return reject();
@@ -196,8 +196,8 @@ export class RecipeService extends DatabaseService {
     return {removedIngredients, updatedIngredients, addedIngredients};
   }
 
-  private removeRecipeIngredients(recipeId: number, ingredients: number[]): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  private removeRecipeIngredients(recipeId: number, ingredients: number[]): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       if (ingredients.length === 0) {
         return resolve();
       }
@@ -218,8 +218,8 @@ export class RecipeService extends DatabaseService {
     }));
   }
 
-  private editRecipeIngredients(recipeId, ingredients): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  private editRecipeIngredients(recipeId, ingredients): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       if (ingredients.length === 0) {
         return resolve();
       }
@@ -240,8 +240,8 @@ export class RecipeService extends DatabaseService {
     }));
   }
 
-  public removeRecipe(recipe: RecipeModel): Promise<boolean> {
-    return new Promise<boolean>(((resolve, reject) => {
+  public removeRecipe(recipe: RecipeModel): Promise<void> {
+    return new Promise<void>(((resolve, reject) => {
       this.database.executeSql(
         'DELETE FROM recipes WHERE id=?',
         [recipe.id]

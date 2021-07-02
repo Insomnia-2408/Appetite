@@ -125,4 +125,19 @@ export class RecipeFormComponent implements OnInit {
   public cancel() {
     this.recipeOut.emit(null);
   }
+
+  public importRecipe(recipe: { instructions: string; servings: number; imageUrl: string; name: string; description: string; ingredients: any[] }) {
+    this.recipeForm.controls.name.setValue(recipe.name);
+    this.recipeForm.controls.description.setValue(recipe.description);
+    this.recipeForm.controls.instructions.setValue(recipe.instructions);
+    this.recipeForm.controls.imageUrl.setValue(recipe.imageUrl);
+    this.recipeForm.controls.servings.setValue(recipe.servings);
+    recipe.ingredients.forEach(ingredient => {
+      (this.recipeForm.controls.ingredients as FormArray).push(new FormGroup({
+        id: new FormControl(ingredient.id, Validators.required),
+        amount: new FormControl(ingredient.amount, Validators.required),
+        unit: new FormControl(ingredient.unit),
+      }));
+    });
+  }
 }

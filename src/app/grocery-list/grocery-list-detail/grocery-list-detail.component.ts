@@ -96,11 +96,11 @@ export class GroceryListDetailComponent implements OnInit {
   public share() {
     const message = this.getGroceryListForSharing();
     this.socialSharing.share(message, 'MEDIUM', null, null)
-      .catch(error => {
-        console.log(JSON.stringify(error));
+      .catch(() => {
+        this.popupService.presentToast('Something went wrong, please try again later');
       })
-      .then(data => {
-        console.log(JSON.stringify(data));
+      .then(() => {
+        this.popupService.presentToast('Sharing is caring!');
       });
   }
 

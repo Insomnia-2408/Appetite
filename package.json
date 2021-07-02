@@ -25,13 +25,18 @@
     "@capacitor/android": "^2.4.7",
     "@capacitor/core": "2.4.7",
     "@ionic-native/core": "^5.33.0",
+    "@ionic-native/http": "^5.34.0",
     "@ionic-native/social-sharing": "^5.33.0",
     "@ionic-native/sqlite": "^5.33.0",
     "@ionic-native/sqlite-porter": "^5.32.0",
     "@ionic/angular": "^5.5.2",
+    "cordova-plugin-advanced-http": "^3.1.0",
+    "cordova-plugin-file": "^6.0.2",
     "cordova-plugin-x-socialsharing": "^6.0.3",
     "cordova-sqlite-storage": "^6.0.0",
     "es6-promise-plugin": "^4.2.2",
+    "ionic2-calendar": "^0.6.9",
+    "node-html-parser": "^3.3.6",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "uk.co.workingedge.cordova.plugin.sqliteporter": "^1.1.1",
@@ -60,7 +65,7 @@
     "protractor": "~7.0.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.0.2"
+    "typescript": "~4.1.2"
   },
   "description": "An Ionic project",
   "cordova": {

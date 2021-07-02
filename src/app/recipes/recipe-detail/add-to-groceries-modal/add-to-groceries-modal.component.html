@@ -21,6 +21,9 @@
                                [value]="groceryList.id">{{groceryList.name}}</ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-button fill="clear" (click)="openAddGroceryList()">
+          <ion-icon name="add-circle-outline" color="primary"></ion-icon>
+        </ion-button>
       </div>
       <ion-item class="ion-no-padding" *ngIf="groceryListForm.get('ingredients').value.length > 0">
         <div fxLayout="column" fxFlexFill>

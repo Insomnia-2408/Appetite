@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add meal to food diary</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="modalController.dismiss(null)">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-spinner class="ion-align-self-center" *ngIf="loadingIngredients"></ion-spinner>
+  <form *ngIf="!loadingIngredients" [formGroup]="diaryEntryForm">
+    <ion-list class="ion-padding">
+      <ion-list-header class="ion-no-padding">Add a ingredient food diary</ion-list-header>
+      <div class="ion-padding">
+        <ion-list class="ion-no-padding" lines="none">
+          <ion-list-header class="ion-no-padding">Items
+            <ion-button fill="clear" (click)="addDiaryEntry()">
+              <ion-icon name="add"></ion-icon>
+            </ion-button>
+          </ion-list-header>
+          <div formArrayName="ingredients"
+               *ngFor="let ingredient of diaryEntryForm.controls.ingredients['controls']; let i=index">
+            <div class="ion-padding-bottom" [formGroupName]="i" fxLayout="row" fxLayoutGap="5px"
+                 fxLayoutAlign="space-between center" fxFlexFill>
+              <div class="ion-no-padding" fxFlex="40" fxLayoutAlign="space-between center">
+                <ion-item class="ion-no-padding" fxFlex="85">
+                  <ion-label position="stacked">Ingredient</ion-label>
+                  <ion-select formControlName="id" placeholder="{{getIngredientName(i)}}" [disabled]="ingredients.length === 0">
+                    <ion-select-option *ngFor="let ingredient of ingredients"
+                                       [value]="ingredient.id">{{ingredient.name}}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-button fxFlex="15" class="ion-no-padding ion-no-margin" (click)="openAddIngredient()" fill="clear">
+                  <ion-icon name="add-outline"></ion-icon>
+                </ion-button>
+              </div>
+              <ion-item class="ion-no-padding" fxFlex="25">
+                <ion-label position="stacked">Amount</ion-label>
+                <ion-input type="text" formControlName="amount"></ion-input>
+              </ion-item>
+              <ion-item class="ion-no-padding" fxFlex="15">
+                <ion-label position="stacked">Unit</ion-label>
+                <ion-input type="text" formControlName="unit"></ion-input>
+              </ion-item>
+              <ion-button class="ion-no-padding ion-no-margin" fill="clear" (click)="removeIngredient(i)">
+                <ion-icon name="close"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+          <p *ngIf="ingredients.length === 0 && diaryEntryForm.get('ingredients')['controls'].length > 0" class="ion-no-padding">
+            Use the add button to add an ingredient first
+          </p>
+        </ion-list>
+      </div>
+      <ion-button (click)="saveFoodDiary()">Save</ion-button>
+    </ion-list>
+  </form>
+
+</ion-content>

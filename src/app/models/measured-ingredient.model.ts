@@ -1,7 +1,7 @@
 import {IngredientModel} from './ingredient.model';
 
 export class MeasuredIngredientModel extends IngredientModel{
-  amount: number;
+  amount;
   unit: string;
   checked?: boolean;
 }

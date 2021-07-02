@@ -1,9 +1,52 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>food-diary</ion-title>
+    <ion-title>Food diary</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <div fxLayout="row" fxLayoutAlign="space-around center">
+    <ion-button slot="icon-only" fill="clear" (click)="calenderComponent.slidePrev()">
+      <ion-icon class="prev-next-month" name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <h1 class="ion-text-center">{{viewTitle}}</h1>
+    <ion-button slot="icon-only" fill="clear" (click)="calenderComponent.slideNext()">
+      <ion-icon class="prev-next-month" name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+  <ng-template #template let-displayEvent="displayEvent">
+    <div class="ion-padding" fxLayout="column" fxLayoutGap="5px">
+      <div *ngIf="selectedFoodDiary?.diaryEntries?.length > 0" fxLayout="column" fxLayoutGap="5px">
+        <ion-label>Meals:</ion-label>
+        <table class="ingredients-table" fxFlexFill>
+          <tr>
+            <th>Ingredient</th>
+            <th>Amount</th>
+            <th>Unit</th>
+          </tr>
+          <tr *ngFor="let ingredient of selectedFoodDiary.diaryEntries">
+            <td>{{ingredient.name}}</td>
+            <td>{{ingredient.amount}}</td>
+            <td>{{ingredient.unit}}</td>
+          </tr>
+        </table>
+        <ion-label>Notes:</ion-label>
+        <ion-item class="text-area-border">
+          <ion-textarea wrap="soft" (keyup)="onKeySearch($event)" [value]="selectedFoodDiary.notes" fxFlexFill #notes></ion-textarea>
+        </ion-item>
+      </div>
+      <div *ngIf="!selectedFoodDiary?.diaryEntries?.length > 0">
+        No entries for this day yet
+      </div>
+      <ion-button (click)="addMeal()">Add meal</ion-button>
+    </div>
+  </ng-template>
+  <calendar [eventSource]="eventSource"
+            [calendarMode]="calendar.mode"
+            [currentDate]="calendar.currentDate"
+            [monthviewEventDetailTemplate]="template"
+            (onCurrentDateChanged)="onCurrentDateChanged($event)"
+            (onTitleChanged)="onViewTitleChanged($event)"
+            [step]="calendar.step" #calendarComponent>
+  </calendar>
 </ion-content>
