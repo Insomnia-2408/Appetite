@@ -95,6 +95,7 @@ export class AddRecipeComponent implements OnInit {
 
   private createNewRecipeFromWeb(url) {
     url = 'http://192.168.50.207:8080?url=' + url;
+    this.popupService.presentToast('Recipe is loading');
     this.recipeScraperService.scrape(url).then(async scrapedRecipe => {
       const recipeIngredients = await this.saveNewIngredients(scrapedRecipe.recipeIngredient);
       const recipe = {

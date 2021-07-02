@@ -138,6 +138,7 @@ export class RecipeFormComponent implements OnInit {
         amount: new FormControl(ingredient.amount, Validators.required),
         unit: new FormControl(ingredient.unit),
       }));
+      this.popupService.presentToast('Recipe is done loading');
     });
   }
 }
